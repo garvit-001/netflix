@@ -1,24 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import { Route, Routes, Navigate, BrowserRouter } from "react-router-dom";
+import HomeScreen from "./screens/HomeScreen";
+import { auth } from "./firebase";
+import UserContext from "./UserContext";
+import ProfileScreen from "./screens/ProfileScreen";
+import BrowseScreen from "./screens/BrowseScreen";
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+      if (userAuth) {
+        setUser(userAuth);
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <UserContext.Provider value={{ user, setUser }}>
+      <div className="app">
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={user ? <Navigate to="/browse" /> : <HomeScreen />}
+            />
+            <Route
+              path="/browse"
+              element={user ? <BrowseScreen /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/profile"
+              element={user ? <ProfileScreen /> : <Navigate to="/" />}
+            />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </UserContext.Provider>
   );
 }
 

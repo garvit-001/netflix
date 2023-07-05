@@ -1,0 +1,12 @@
+*{
+    margin: 0;
+    padding: 0;
+    /* background-color: black;
+    z-index: -1; */
+    color: white; 
+  }
+  
+  .browseScreen{
+    background-color: rgb(0, 0, 0);
+    color: rgb(187, 28, 28);
+  }
